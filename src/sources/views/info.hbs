@@ -1,0 +1,99 @@
+<div class="m-auto" style="width: 600px;">
+    <h2 class="text-center my-3">Thông tin sản phẩm</h2>
+    <form id="myForm" method="post" action="/product/update/{{nv._id}}?_method=PUT" enctype="multipart/form-data">
+        <div class="form-group my-2">
+            <label for="name">Tên sản phẩm:</label>
+            <input type="text" class="form-control my-1" id="name" placeholder="Enter full name" name="name"
+                value="{{nv.name}}" required>
+        </div>
+
+        <div class="form-group my-2 d-flex flex-column">
+            <label for="image">Hình ảnh</label>
+            <img class="border my-2" src="{{avatar}}" style="width: 100px;height: 100px;" alt="Lỗi hiển thị!"
+                id="preview-image" />
+            <input type="file" class="form-control-file" name="image" id="image" accept="image/*"
+                onchange="previewImage(event);" multiple>
+        </div>
+
+        <div class="form-group my-2">
+            <label for="description">Mô tả:</label>
+            <input type="text" class="form-control my-1" id="description" placeholder="Enter description"
+                name="description" value="{{nv.description}}" required>
+        </div>
+
+        <div class="form-group my-2">
+            <label for="price">Price:</label>
+            <input type="number" class="form-control my-1" id="price" name="price" placeholder="Enter price"
+                value="{{nv.price}}" required>
+        </div>
+
+        {{!-- category --}}
+        <div class="form-group">
+            <label for="category">Phân loại:</label>
+            <select id="category" name="category" class="form-control my-2">
+                {{#each selectedOptionCategory}}
+                <option value="{{@key}}" {{#if this}}selected{{/if}}>{{@key}}</option>
+                {{/each}}
+            </select>
+        </div>
+        {{!-- status --}}
+        <div class="form-group">
+            <label for="status">Trạng thái:</label>
+            <select id="status" name="status" class="form-control my-2">
+                {{#each selectedOption}}
+                <option value="{{@key}}" {{#if this}}selected{{/if}}>{{@key}}</option>
+                {{/each}}
+            </select>
+        </div>
+
+
+        <div class="form-group my-2">
+            <label for="sold">Số lượng đã bán:</label>
+            <input type="number" class="form-control my-1" id="sold" name="sold" placeholder="Enter sold"
+                value="{{nv.sold}}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="event">Liên kết sự kiện:</label>
+            <select id="event" name="event" class="form-control my-2">
+                {{#each selectedOptionEvent}}
+                <option value="{{@key}}" {{#if this}}selected{{/if}}>{{@key}}</option>
+                {{/each}}
+            </select>
+        </div>
+
+             
+        {{!-- sale --}}
+        <div class="form-group">
+            <label for="sale" class="mt-2">Phầm trăm giảm giá:</label>
+            <input type="number" step="1" min="0" max="100" class="form-control my-2" id="sale" name="sale" value="{{nv.sale}}" required>
+        </div>
+
+
+
+
+        <input type="hidden" id="myArrayInput" name="old" value="{{nv.image}}">
+        <button type="submit" class="btn btn-success col-3 col-lg-12 my-3">Submit</button>
+
+
+    </form>
+</div>
+
+<script>
+
+
+    function previewImage(event) {
+        var input = event.target;
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var image = document.getElementById("preview-image");
+                image.src = e.target.result;
+                image.style.display = "block";
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+
+</script>

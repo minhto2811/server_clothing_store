@@ -1,0 +1,44 @@
+<div class="container">
+    <h1>Thêm danh mục mới</h1>
+    <form id="myForm" method="post" action="add" enctype="multipart/form-data">
+       
+
+        {{!-- image --}}
+        <div class="form-group">
+            <img style="width: 100px;height: 100px;display: none;" alt="Lỗi hiển thị!" id="preview-image" />
+            <label for="image" class="mb-2">Hình ảnh:</label>
+            <input type="file" class="form-control my-2-file" id="image" name="image" accept="image/*"
+                onchange="previewImage(event);" required>
+        </div>
+
+        {{!-- name --}}
+        <div class="form-group">
+            <label for="name" class="mt-2">Tên danh mục:</label>
+            <input type="text" class="form-control my-2" id="name" name="name" required>
+        </div>
+
+
+
+        <button type="submit" class="btn btn-primary my-2">Thêm</button>
+    </form>
+</div>
+
+<script>
+    //hiển thị hình ảnh đã chọn
+    function previewImage(event) {
+        var input = event.target;
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var image = document.getElementById("preview-image");
+                image.src = e.target.result;
+                image.style.display = "block";
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+
+
+
+</script>

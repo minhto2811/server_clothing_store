@@ -1,0 +1,96 @@
+<div class="container text-center">
+    <h1 class="my-4">Quản lí danh mục</h1>
+
+
+
+    <p><a href="add" class="link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Thêm
+            danh mục mới</a></p>
+
+
+    <!-- Danh sách user -->
+    <table class="table table-striped table-bordered my-2">
+        <thead class="bg-dark-subtle">
+            <tr>
+                <th>#</th>
+                <th>Hình ảnh</th>
+                <th>Tên danh mục</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {{#each users}}
+            <tr>
+                <td>{{sum @index}}</td>
+                <td><img src="{{this.image}}" style="width: 80px;height: 80px;"/></td>
+                <td>{{this.name}}</td>
+    
+                <td>
+                    <!-- Các nút xóa, sửa user -->
+                    <button type="button" class="btn btn-danger btn-sm mr-2" data-bs-toggle="modal"
+                        data-bs-target="#deleteModal" data-bs-id="{{this._id}}">Xóa</button>
+                    <button type="button" class="btn btn-primary btn-sm ms-3"><a class="btn-edit"
+                            href="info/{{this._id}}">Sửa</a></button>
+                </td>
+            </tr>
+            {{/each}}
+
+
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+
+
+
+
+
+{{!-- form hidden --}}
+
+<form method="post" name="delete-user-form"></form>
+
+
+
+{{!-- modal delete --}}
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Xóa tài khoản</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có muốn xóa thông tin tài khoản này?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quay lại</button>
+                <button type="button" class="btn btn-primary" id="btn-delete-user">Tiếp tục</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var Id_product;
+        var deleteForm = document.forms['delete-user-form'];
+
+        const deleteModal = document.getElementById('deleteModal')
+        deleteModal.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget;
+            ID_user = button.getAttribute('data-bs-id');
+        })
+
+        var btn_del = document.getElementById('btn-delete-user');
+        btn_del.onclick = function () {
+            deleteForm.action = 'delete/' + ID_user + "?_method=DELETE";
+            deleteForm.submit();
+        }
+    });
+</script>
