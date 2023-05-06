@@ -9,14 +9,14 @@ const apiCateRoute = require('./Api.categorys.route');
 const apiUrl = process.env.API_URL;
 
 function route(app) {
-    app.use(apiUrl+'/api/product', apiPrdRoute);
-    app.use(apiUrl+'/api/banner', apiBnRoute);
-    app.use(apiUrl+'/api/category', apiCateRoute);
+    app.use('/api/product', apiPrdRoute);
+    app.use('/api/banner', apiBnRoute);
+    app.use('/api/category', apiCateRoute);
 
 
-    app.use(apiUrl+'/product', prdRoute);
-    app.use(apiUrl+'/banner', bnRoute);
-    app.use(apiUrl+'/category', cateRoute);
+    app.use('/product', prdRoute);
+    app.use('/banner', bnRoute);
+    app.use('/category', cateRoute);
 }
 
 module.exports = route;
