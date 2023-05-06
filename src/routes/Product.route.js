@@ -3,6 +3,7 @@ const router = express.Router();
 const prdController = require('../controllers/ProductController');
 const upload = require('../utils/saveIMG');
 
+
 router.get('/home', prdController.home);
 router.get('/add', prdController.add);
 router.post('/add', upload.array('image'), prdController.store);
