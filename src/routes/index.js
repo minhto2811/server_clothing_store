@@ -6,12 +6,14 @@ require('dotenv').config();
 const apiPrdRoute = require('./Api.products.route');
 const apiBnRoute = require('./Api.banners.route');
 const apiCateRoute = require('./Api.categorys.route');
+const apiUserRoute = require('./Api.users.route');
 const apiUrl = process.env.API_URL;
 
 function route(app) {
     app.use('/api/product', apiPrdRoute);
     app.use('/api/banner', apiBnRoute);
     app.use('/api/category', apiCateRoute);
+    app.use('/api/user', apiUserRoute);
 
 
     app.use('/product', prdRoute);
