@@ -19,6 +19,10 @@ function route(app) {
     app.use('/product', prdRoute);
     app.use('/banner', bnRoute);
     app.use('/category', cateRoute);
+
+    app.get("/", (req, res) => {
+        res.send('SERVER ON')
+    })
 }
 
 module.exports = route;
