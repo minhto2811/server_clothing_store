@@ -12,6 +12,5 @@
       "dest": "/"
     }
   ],
-  "buildCommand": "next build",
-  "cleanUrls": true
+  "buildCommand": "next build"
 }
