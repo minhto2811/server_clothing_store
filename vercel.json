@@ -12,16 +12,6 @@
       "dest": "/"
     }
   ],
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/"
-    }
-  ],
-  "env": {
-    "BRANCH": "custom-branch"
-  },
-  "scripts": {
-    "vercel-deploy": "if [ \"$BRANCH\" != \"main\" ]; then echo \"Cannot deploy from $BRANCH branch\"; exit 1; fi"
-  }
+  "buildCommand": "next build",
+  "cleanUrls": true
 }
