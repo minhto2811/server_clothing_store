@@ -20,7 +20,7 @@ class CategoryController {
 
     store(req, res, next) {
         var object = req.body;
-        object.image = `/image/${req.file.originalname}`;
+        object.image = `/image/${req.file.filename}`;
         Category.create(object).then((nv) => res.redirect('home'))
             .catch((err) => {
                 res.json(err);
@@ -55,7 +55,7 @@ class CategoryController {
         console.log("update: ", id);
         console.log("update: ", formData);
         if (req.file !== undefined && req.file !== null) {
-            formData.image = `/image/${req.file.originalname}`;
+            formData.image = `/image/${req.file.filename}`;
         } else {
             formData.image = formData.old;
         }
