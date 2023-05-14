@@ -41,7 +41,7 @@ class BannerController {
         const formData = req.body;
         const id = req.params._id;
         if (req.file !== undefined && req.file !== null) {
-            formData.image = `/image/${req.file.originalname}`;
+            formData.image = `/image/${req.file.filename}`;
         } else {
             formData.image = formData.old;
         }
