@@ -20,7 +20,7 @@ class BannerController {
 
     store(req, res, next) {
         var object = req.body;
-        object.image = `/image/${req.file.originalname}`;
+        object.image = `/image/${req.file.filename}`;
         Banner.create(object).then((nv) => res.redirect('home'))
             .catch((err) => {
                 res.json(err);
