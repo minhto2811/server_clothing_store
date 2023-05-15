@@ -20,7 +20,7 @@ router.get('/banner/:event', apiController.event);
 //// http://localhost:3000/api/product/category/:category   
 // (":event" là 1 thuộc tính của model event)
 //lấy toàn bộ bản ghi sản phẩm được nhóm theo event (group by event)
-//event chính là những banner tự chuyển trong phần màn hình chính của ứng dụng
+//event chính là thuộc tính của các banner tự chuyển trong phần màn hình chính của ứng dụng
 
 
 

@@ -17,7 +17,7 @@ class ApiController {
 
     store(req, res, next) {
         var object = req.body;
-        object.image = `/image/${req.file.originalname}`;
+        object.image = `/image/${req.file.filename}`;
         Category.create(object).then((nv) => res.json(nv))
             .catch((err) => {
                 res.json(err);
@@ -52,7 +52,7 @@ class ApiController {
         console.log("update: ", id);
         console.log("formData: ", formData);
         if (req.file !== undefined && req.file !== null) {
-            formData.image = `/image/${req.file.originalname}`;
+            formData.image = `/image/${req.file.filename}`;
         } else {
             formData.image = formData.old;
         }
