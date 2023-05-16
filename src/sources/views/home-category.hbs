@@ -1,5 +1,11 @@
-<div class="container text-center">
-    <h1 class="my-4">Quản lí danh mục</h1>
+<div class="container ">
+
+    <div class="btn-group my-2">
+        <a href="/product/home" class="btn btn-primary" aria-current="page">Sản phẩm</a>
+        <a href="/banner/home" class="btn btn-primary">Banner</a>
+        <a href="/category/home" class="btn btn-primary active">Danh mục</a>
+    </div>
+    <h1 class="my-4 text-center">Quản lí danh mục</h1>
 
 
 
@@ -11,21 +17,21 @@
     <table class="table table-striped table-bordered my-2">
         <thead class="bg-dark-subtle">
             <tr>
-                <th>#</th>
-                <th>Hình ảnh</th>
-                <th>Tên danh mục</th>
-                <th>Hành động</th>
+                <th class="text-center">#</th>
+                <th class="text-center">Hình ảnh</th>
+                <th class="text-center">Tên danh mục</th>
+                <th class="text-center">Hành động</th>
             </tr>
         </thead>
         <tbody>
 
             {{#each users}}
             <tr>
-                <td>{{sum @index}}</td>
-                <td><img src="{{this.image}}" style="width: 80px;height: 80px;"/></td>
-                <td>{{this.name}}</td>
-    
-                <td>
+                <td class="text-center">{{sum @index}}</td>
+                <td class="text-center"><img src="{{this.image}}" style="width: 80px;height: 80px;" /></td>
+                <td class="text-center">{{this.name}}</td>
+
+                <td class="text-center">
                     <!-- Các nút xóa, sửa user -->
                     <button type="button" class="btn btn-danger btn-sm mr-2" data-bs-toggle="modal"
                         data-bs-target="#deleteModal" data-bs-id="{{this._id}}">Xóa</button>

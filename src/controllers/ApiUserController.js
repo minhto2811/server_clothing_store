@@ -1,5 +1,5 @@
 const User = require('../models/User');
-// const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const { convertleObject } = require('../utils/convertObj');
 const { config } = require('dotenv');
 require('dotenv').config();
@@ -7,20 +7,20 @@ const SECRET = process.env.SECRET;
 
 class ApiController {
     login(req, res, next) {
-        // console.log("account dang nhap",req.body.username)
-        // User.findOne({ username: req.body.username })
-        //     .then(nvs => {
-        //         console.log("user lay duoc ",nvs)
-        //         if (nvs.password === req.body.password) {
-        //             var token = jwt.sign({ username: nvs.username, password: nvs.password }, SECRET);
-        //             console.log("token",token)
-        //             res.json(token);
-        //         }
-        //         else {
-        //             res.json(null);
-        //         }
-        //     })
-        //     .catch(err => res.json(err));
+        console.log("account dang nhap",req.body.username)
+        User.findOne({ username: req.body.username })
+            .then(nvs => {
+                console.log("user lay duoc ",nvs)
+                if (nvs.password === req.body.password) {
+                    var token = jwt.sign({ username: nvs.username, password: nvs.password }, SECRET);
+                    console.log("token",token)
+                    res.json(token);
+                }
+                else {
+                    res.json(null);
+                }
+            })
+            .catch(err => res.json(err));
     }
 
 
@@ -77,24 +77,24 @@ class ApiController {
 
 
    async info(req, res, next) {
-        // const token = req.body.token;
-        // console.log(token)
-        // try {
-        //     const decoded = await jwt.verify(token, SECRET);
-        //     console.log(decoded)
-        //     User.findOne({ username: decoded.username })
-        //         .then(nvs => {
-        //             if (nvs.password == decoded.password) {
-        //                 res.json(nvs);
-        //             }
-        //             else {
-        //                 res.json(null);
-        //             }
-        //         })
-        //         .catch(err => res.json(err));
-        // } catch (error) {
-        //     res.json(error)
-        // }
+        const token = req.body.token;
+        console.log(token)
+        try {
+            const decoded = await jwt.verify(token, SECRET);
+            console.log(decoded)
+            User.findOne({ username: decoded.username })
+                .then(nvs => {
+                    if (nvs.password == decoded.password) {
+                        res.json(nvs);
+                    }
+                    else {
+                        res.json(null);
+                    }
+                })
+                .catch(err => res.json(err));
+        } catch (error) {
+            res.json(error)
+        }
 
     }
 
