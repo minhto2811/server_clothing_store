@@ -7,10 +7,9 @@ const SECRET = process.env.SECRET;
 
 class ApiController {
     login(req, res, next) {
-        console.log("account dang nhap",req.body.username)
+        console.log("user lay duoc ",req.body.username)
         User.findOne({ username: req.body.username })
             .then(nvs => {
-                console.log("user lay duoc ",nvs)
                 if (nvs.password === req.body.password) {
                     var token = jwt.sign({ username: nvs.username, password: nvs.password }, SECRET);
                     console.log("token",token)
@@ -26,6 +25,7 @@ class ApiController {
 
 
     store(req, res, next) {
+        console.log("tao tai khoan: ",req.body)
         var object = req.body;
         object.image = "/image/Default-welcomer-1683621300160.png"
         User.create(object).then((nv) => res.json(nv))
@@ -97,11 +97,6 @@ class ApiController {
         }
 
     }
-
-
-
-
-
 
 }
 
