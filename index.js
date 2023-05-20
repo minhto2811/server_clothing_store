@@ -41,7 +41,6 @@ db.connect();
 app.listen(PORT, () => {
     console.log("path:",path.join(__dirname,'./src/public'));
     console.log(`Server is running at http://localhost:${PORT}/product/home`);
-    console.log(`api get product at http://localhost:${PORT}/api/product/home`);
 })
 
 

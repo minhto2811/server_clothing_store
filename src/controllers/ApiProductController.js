@@ -31,6 +31,16 @@ class ApiController {
             .catch(err => res.json(err));
     }
 
+    
+    related(req, res, next) {
+        Product.find().limit(5)
+            .then(nvs => {
+                res.json(nvs)
+            })
+            .catch(err => res.json(err));
+    }
+
+
 
 
     store(req, res, next) {
@@ -67,8 +77,6 @@ class ApiController {
     update(req, res, next) {
         const formData = req.body;
         const id = req.params._id;
-        console.log("update: ", id);
-        console.log("formData: ", formData);
         if (req.file !== undefined && req.file !== null) {
             formData.image = `/image/${req.file.originalname}`;
         } else {
