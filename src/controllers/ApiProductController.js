@@ -33,7 +33,7 @@ class ApiController {
 
     
     related(req, res, next) {
-        Product.find({ category: req.params.category }).limit(5)
+        Product.find({ category: req.params.category }).limit(15)
             .then(nvs => {
                 res.json(nvs)
             })
