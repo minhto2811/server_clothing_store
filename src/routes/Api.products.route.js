@@ -22,7 +22,7 @@ router.get('/banner/:event', apiController.event);
 //lấy toàn bộ bản ghi sản phẩm được nhóm theo event (group by event)
 //event chính là thuộc tính của các banner tự chuyển trong phần màn hình chính của ứng dụng
 
-router.get('/related', apiController.related);
+router.get('/related/:category', apiController.related);
 
 //những phần chưa comment dưới đây là nhưng phần chưa dùng đến
 router.post('/add', upload.single('image'), apiController.store);
