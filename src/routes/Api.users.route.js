@@ -7,7 +7,7 @@ const upload = require('../utils/saveIMG');
 router.post('/login', apiController.login);
 router.post('/add', upload.single('image'), apiController.store);
 router.post('/info', apiController.info);
-router.put('/update/:_id',upload.single('image'), apiController.update);
+router.post('/update/image/:username',upload.single('image'), apiController.update);
 
 
 

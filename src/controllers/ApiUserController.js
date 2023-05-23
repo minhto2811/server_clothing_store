@@ -1,5 +1,4 @@
 const User = require('../models/User');
-const jwt = require('jsonwebtoken');
 const { convertleObject } = require('../utils/convertObj');
 const { config } = require('dotenv');
 require('dotenv').config();
@@ -7,17 +6,11 @@ const SECRET = process.env.SECRET;
 
 class ApiController {
     login(req, res, next) {
-        console.log("user lay duoc ",req.body.username)
-        User.findOne({ username: req.body.username })
+        console.log("user lay duoc ",req.body)
+        User.findOne({ username: req.body.username,password:req.body.password })
             .then(nvs => {
-                if (nvs.password === req.body.password) {
-                    var token = jwt.sign({ username: nvs.username, password: nvs.password }, SECRET);
-                    console.log("token",token)
-                    res.json(token);
-                }
-                else {
-                    res.json(null);
-                }
+                console.log("user ",nvs)   
+                    res.json(convertleObject(nvs));
             })
             .catch(err => res.json(err));
     }
@@ -57,21 +50,17 @@ class ApiController {
 
 
     update(req, res, next) {
-        const formData = req.body;
-        const id = req.params._id;
-        console.log("update: ", id);
-        console.log("formData: ", formData);
-        if (req.file !== undefined && req.file !== null) {
-            formData.image = `/image/${req.file.originalname}`;
-        } else {
-            formData.image = formData.old;
-        }
-        delete formData.old;
-        User.updateOne({ _id: id }, formData)
-            .then(() => {
-                res.json({ msg: "update thanh cong" })
-            })
+        User.findOne({username:req.params.username}).then(user=>{   
+            if (req.file !== undefined && req.file !== null) {
+                user.image = `/image/${req.file.filename}`;
+            }
+            User.updateOne({ _id:user._id}, user)
+            .then(res.json(user))
             .catch(err => res.json(err));
+        }
+        ).catch(err =>res.json(err))
+        
+       
     }
 
 

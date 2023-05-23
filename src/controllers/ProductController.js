@@ -117,7 +117,6 @@ class ProductController {
         const io = formData.old.split(",");
         const result = io.map((item) => item.trim());
         formData.image = result.concat(arr);
-        formData.image = result.concat(arr);
         formData.sale = parseInt(req.body.sale);
         delete formData.old;
         console.log(formData);
