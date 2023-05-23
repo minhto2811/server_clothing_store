@@ -1,13 +1,11 @@
 const Favourite = require('../models/Favourite');
 const { convertleObject } = require('../utils/convertObj');
-
+const Product = require('../models/Product');
 class ApiController {
-   
+
     getAll(req, res, next) {
-        console.log("getAll ")
         Favourite.findOne({ id_user: req.params.id_user })
             .then(nvs => {
-                console.log("Favourite ", nvs.list_id_product)
                 res.json(nvs.list_id_product);
             })
             .catch(err => res.json(err));
@@ -26,8 +24,6 @@ class ApiController {
                             res.json(err);
                         });
                 } else {
-                    console.log(req.body.id_product);
-                    console.log(nvs.list_id_product);
                     const a = nvs.list_id_product.concat(req.body.id_product)
                     Favourite.updateOne({ id_user: req.params.id_user }, { id_user: req.params.id_user, list_id_product: a }).then(
                         nv => res.json({ id_user: req.params.id_user, list_id_product: a })
@@ -41,12 +37,27 @@ class ApiController {
 
     }
 
-    delete(req, res, next) {
-        console.log(req.params._id);
-        Favourite.deleteOne({ _id: req.params._id })
-            .then(() => res.json({ err: "Xoa thanh cong" }))
-            .catch(() => res.json({ err: "Xoa that bai" }));
+    update(req, res, next) {
+        console.log(req.params.id_user);
+        console.log(req.body.id_product);
+        Favourite.findOne({ id_user: req.params.id_user })
+            .then(fav => {
+                const list = fav.list_id_product.filter(function (element) {
+                    return element !== req.body.id_product;
+                });;
+                Favourite.updateOne({ id_user: req.params.id_user }, { id_user: req.params.id_user, list_id_product: list })
+                    .then(
+                        nv => res.json({ id_user: req.params.id_user, list_id_product: list })
+                    ).catch(
+                        err => res.json(err)
+                    );
+
+            })
+            .catch(err => res.json(err));
     }
+
+
+
 
     search(req, res, next) {
         const query = req.body.name;
@@ -63,42 +74,25 @@ class ApiController {
 
 
 
-    update(req, res, next) {
-        Favourite.findOne({ Favouritename: req.params.Favouritename }).then(Favourite => {
-            if (req.file !== undefined && req.file !== null) {
-                Favourite.image = `/image/${req.file.filename}`;
-            }
-            Favourite.updateOne({ _id: Favourite._id }, Favourite)
-                .then(res.json(Favourite))
-                .catch(err => res.json(err));
-        }
-        ).catch(err => res.json(err))
-
-
-    }
 
 
 
-    async info(req, res, next) {
-        const token = req.body.token;
-        console.log(token)
-        try {
-            const decoded = await jwt.verify(token, SECRET);
-            console.log(decoded)
-            Favourite.findOne({ Favouritename: decoded.Favouritename })
-                .then(nvs => {
-                    if (nvs.password == decoded.password) {
-                        res.json(nvs);
-                    }
-                    else {
-                        res.json(null);
-                    }
-                })
-                .catch(err => res.json(err));
-        } catch (error) {
-            res.json(error)
-        }
 
+    info(req, res, next) {
+        console.log("info = ", req.params.id_user)
+        Favourite.findOne({ id_user: req.params.id_user })
+            .then(nvs => {
+                console.log(nvs)
+                Product.find({ _id: { $in: nvs.list_id_product } })
+                    .then((pro) => {
+                        console.log(pro)
+                        res.json(pro)
+                    })
+                    .catch(err => {
+                        res.json(err)
+                    })
+            })
+            .catch(err => res.json(err));
     }
 
 }
