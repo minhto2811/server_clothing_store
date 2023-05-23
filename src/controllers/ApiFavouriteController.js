@@ -59,27 +59,8 @@ class ApiController {
 
 
 
-    search(req, res, next) {
-        const query = req.body.name;
-        Favourite.find({ name: query })
-            .then(nv => {
-                if (nv.length === 0) {
-                    res.json({ msg: "nhan vien khong ton tai" })
-                } else {
-                    res.json(nv)
-                }
-            }).catch(err => res.json(err));
-
-    }
-
-
-
-
-
-
 
     info(req, res, next) {
-        console.log("info = ", req.params.id_user)
         Favourite.findOne({ id_user: req.params.id_user })
             .then(nvs => {
                 console.log(nvs)

@@ -10,8 +10,4 @@ router.post('/update/:id_user', apiController.update);
 
 
 
-// router.get('/home', apiController.home);
-
-// router.post('/search', apiController.search);
-
 module.exports = router;
