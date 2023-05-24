@@ -6,11 +6,11 @@ const SECRET = process.env.SECRET;
 
 class ApiController {
     login(req, res, next) {
-        console.log("user lay duoc ",req.body)
-        User.findOne({ username: req.body.username,password:req.body.password })
+        console.log("user lay duoc ", req.body)
+        User.findOne({ username: req.body.username, password: req.body.password })
             .then(nvs => {
-                console.log("user ",nvs)   
-                    res.json(convertleObject(nvs));
+                console.log("user ", nvs)
+                res.json(convertleObject(nvs));
             })
             .catch(err => res.json(err));
     }
@@ -18,7 +18,7 @@ class ApiController {
 
 
     store(req, res, next) {
-        console.log("tao tai khoan: ",req.body)
+        console.log("tao tai khoan: ", req.body)
         var object = req.body;
         object.image = "/image/Default-welcomer-1683621300160.png"
         User.create(object).then((nv) => res.json(nv))
@@ -50,22 +50,39 @@ class ApiController {
 
 
     update(req, res, next) {
-        User.findOne({username:req.params.username}).then(user=>{   
+        User.findOne({ username: req.params.username }).then(user => {
             if (req.file !== undefined && req.file !== null) {
                 user.image = `/image/${req.file.filename}`;
             }
-            User.updateOne({ _id:user._id}, user)
-            .then(res.json(user))
-            .catch(err => res.json(err));
+            User.updateOne({ _id: user._id }, user)
+                .then(res.json(user))
+                .catch(err => res.json(err));
         }
-        ).catch(err =>res.json(err))
-        
-       
+        ).catch(err => res.json(err))
+
+
     }
 
 
+    changePass(req, res, next) {
+        console.log("body",req.body);
+        User.findOne({ username: req.body.username, password: req.body.password }).then(user => {
+            console.log(user)
+            user.password = req.body.passwordnew;
+            User.updateOne({ _id: user._id }, user)
+                .then(rs => {
+                    console.log(user)
+                    res.json(user)
+                })
+                .catch(err => res.json(err));
+        }
+        ).catch(err => res.json(err))
 
-   async info(req, res, next) {
+
+    }
+
+
+    async info(req, res, next) {
         const token = req.body.token;
         console.log(token)
         try {
