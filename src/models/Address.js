@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const Address = new mongoose.Schema({
-    _id: mongoose.Schema.ObjectId,
     fullname: { type: String, require: true },
     numberphone: { type: String, require: true },
     province: { type: String, require: true },

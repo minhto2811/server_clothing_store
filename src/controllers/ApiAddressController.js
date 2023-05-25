@@ -32,19 +32,18 @@ class ApiController {
 
 
     addNew(req, res, next) {
-        console.log(req.body)
-        const address = new Address(req.body);
-        address.save().then(
+        const address = req.body;
+        Address.create(address).then(
             obj => {
                 User.findOne({ _id: req.params.id_user })
-                    .then(user => {
-                        user.address = user.address.concat(address.id);
-                        user.save();
-                        res.json(obj);
+                    .then(user => {  
+                        user.address = user.address.concat(obj.id);
+                        user.save().then(() => res.json(obj)).catch(err => res.json(err));
+
                     })
                     .catch(err => res.json(err))
             }
-        ).catch(err => res.json(err));
+        ).catch(err => console.log(err));
     }
 
     address(req, res, next) {
@@ -68,14 +67,18 @@ class ApiController {
     delete(req, res, next) {
         const id_user = req.params.id_user;
         const id_address = req.body.id_address;
-        console.log(id_user+"  "+id_address);
-        Address.findByIdAndDelete().then(
-            obj => {
+        console.log(id_user + "  " + id_address);
+        Address.findByIdAndDelete(id_address).then(
+            () => {
+                console.log("xoa address ok")
                 User.findOne({ _id: id_user }).then(
                     user => {
+                        console.log("tim user ",user)
                         user.address = user.address.filter(item => item !== id_address);
+                        console.log("sua user ",user)
                         User.updateOne({ _id: id_user }, user).then(
-                            user => {
+                            user1 => {
+                                console.log(" user=> ",user1)
                                 res.json(user);
                             }
                         ).catch(err => res.json(err));
