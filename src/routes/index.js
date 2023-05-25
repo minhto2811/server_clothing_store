@@ -11,6 +11,7 @@ const apiBnRoute = require('./Api.banners.route');
 const apiCateRoute = require('./Api.categorys.route');
 const apiUserRoute = require('./Api.users.route');
 const apiFavRoute = require('./Api.favourites.route');
+const apiAddrRoute = require('./Api.address.route');
 
 function route(app) {
     app.use('/api/product', apiPrdRoute);
@@ -18,6 +19,7 @@ function route(app) {
     app.use('/api/category', apiCateRoute);
     app.use('/api/user', apiUserRoute);
     app.use('/api/favourites', apiFavRoute);
+    app.use('/api/address', apiAddrRoute);
 
 
     app.use('/product', prdRoute);

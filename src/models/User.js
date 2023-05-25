@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
 
 const User = new mongoose.Schema({
-
+    _id: mongoose.Schema.ObjectId,
     fullname: { type: String, require: true },
     username: { type: String, require: true, unique:true },
     password: { type: String, require: true },
     numberphone: { type: String, require: true },
     role: { type: Boolean, require: true },
     email: { type: String, require: false },
-    address: { type: String, require: false },
+    address: { type: Array, require: false },
     image: { type: String, require: false },
     sex:{ type: String, require: false },
     date:{ type: String, require: false },
