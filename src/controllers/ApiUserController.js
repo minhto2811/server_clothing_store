@@ -65,19 +65,14 @@ class ApiController {
 
 
     changePass(req, res, next) {
-        console.log("body",req.body);
-        User.findOne({ username: req.body.username, password: req.body.password }).then(user => {
-            console.log(user)
-            user.password = req.body.passwordnew;
-            User.updateOne({ _id: user._id }, user)
-                .then(rs => {
-                    console.log(user)
-                    res.json(user)
-                })
-                .catch(err => res.json(err));
-        }
-        ).catch(err => res.json(err))
-
+        const filter = {username:req.body.username,password:req.body.password};
+        const passnew = req.body.passwordnew;
+        const update = { $set: { password: req.body.passwordnew } };
+        console.log(filter);
+        console.log(update);
+        User.updateOne(filter,update)
+        .then(rs=>res.json(passnew))
+        .catch(err=>res.json(err));
 
     }
 
