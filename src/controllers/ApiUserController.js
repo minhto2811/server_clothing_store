@@ -46,13 +46,13 @@ class ApiController {
 
     changePass(req, res, next) {
         const filter = { username: req.body.username, password: req.body.password };
-        const passnew = req.body.passwordnew;
         const update = { $set: { password: req.body.passwordnew } };
         console.log(filter);
         console.log(update);
-        User.updateOne(filter, update).exec()
-            .then(rs =>{
-                 res.json(rs.modifiedCount)})
+        User.updateOne(filter, update)
+            .then(rs => {
+                res.json(rs.modifiedCount)
+            })
             .catch(err => res.json(err));
 
     }
@@ -81,11 +81,15 @@ class ApiController {
     }
 
     updateinfo(req, res, next) {
-        const id = req.params.id_user;
-        const user = req.body;
-        console.log(id)
-        console.log(user)
-        User.findByIdAndUpdate(id, user).then(() => res.json(user)).catch(err => res.json(err));
+        User.updateOne({ _id: req.body._id }, req.body).then((rs) => {
+            if (rs.matchedCount === 1 && rs.modifiedCount === 0) {
+                res.json(rs.modifiedCount-1)
+            }else{
+                res.json(rs.modifiedCount)
+            }
+        
+        })
+            .catch(err => res.json(err));
     }
 
 }
