@@ -27,26 +27,6 @@ class ApiController {
             });
     }
 
-    delete(req, res, next) {
-        console.log(req.params._id);
-        User.deleteOne({ _id: req.params._id })
-            .then(() => res.json({ err: "Xoa thanh cong" }))
-            .catch(() => res.json({ err: "Xoa that bai" }));
-    }
-
-    search(req, res, next) {
-        const query = req.body.name;
-        User.find({ name: query })
-            .then(nv => {
-                if (nv.length === 0) {
-                    res.json({ msg: "nhan vien khong ton tai" })
-                } else {
-                    res.json(nv)
-                }
-            }).catch(err => res.json(err));
-
-    }
-
 
 
     update(req, res, next) {
@@ -65,14 +45,14 @@ class ApiController {
 
 
     changePass(req, res, next) {
-        const filter = {username:req.body.username,password:req.body.password};
+        const filter = { username: req.body.username, password: req.body.password };
         const passnew = req.body.passwordnew;
         const update = { $set: { password: req.body.passwordnew } };
         console.log(filter);
         console.log(update);
-        User.updateOne(filter,update)
-        .then(rs=>res.json(passnew))
-        .catch(err=>res.json(err));
+        User.updateOne(filter, update)
+            .then(rs => res.json(passnew))
+            .catch(err => res.json(err));
 
     }
 
@@ -97,6 +77,14 @@ class ApiController {
             res.json(error)
         }
 
+    }
+
+    updateinfo(req, res, next) {
+        const id = req.params.id_user;
+        const user = req.body;
+        console.log(id)
+        console.log(user)
+        User.findByIdAndUpdate(id, user).then(() => res.json(user)).catch(err => res.json(err));
     }
 
 }

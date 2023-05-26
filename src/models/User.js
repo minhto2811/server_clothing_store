@@ -9,7 +9,7 @@ const User = new mongoose.Schema({
     email: { type: String, require: false },
     address: { type: Array, require: false },
     image: { type: String, require: false },
-    sex:{ type: String, require: false },
+    sex:{ type: Boolean, require: false },
     date:{ type: String, require: false },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },

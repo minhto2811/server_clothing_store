@@ -9,10 +9,7 @@ router.post('/add', upload.single('image'), apiController.store);
 router.post('/info', apiController.info);
 router.post('/update/image/:username',upload.single('image'), apiController.update);
 router.post('/password',apiController.changePass);
+router.post('/updateinfo/:id_user',apiController.updateinfo);
 
-
-// router.get('/home', apiController.home);
-// router.delete('/delete/:_id', apiController.delete);
-// router.post('/search', apiController.search);
 
 module.exports = router;
