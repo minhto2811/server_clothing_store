@@ -50,8 +50,9 @@ class ApiController {
         const update = { $set: { password: req.body.passwordnew } };
         console.log(filter);
         console.log(update);
-        User.updateOne(filter, update)
-            .then(rs => res.json(passnew))
+        User.updateOne(filter, update).exec()
+            .then(rs =>{
+                 res.json(rs.modifiedCount)})
             .catch(err => res.json(err));
 
     }
