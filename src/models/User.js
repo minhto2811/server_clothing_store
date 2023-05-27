@@ -11,6 +11,8 @@ const User = new mongoose.Schema({
     image: { type: String, require: false },
     sex:{ type: Boolean, require: false },
     date:{ type: String, require: false },
+    resetToken:{ type: String, require: false },
+    resetTokenExpiration:{ type: Date, require: false },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
 

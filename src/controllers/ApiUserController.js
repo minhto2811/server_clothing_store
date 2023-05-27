@@ -3,6 +3,7 @@ const { convertleObject } = require('../utils/convertObj');
 const { config } = require('dotenv');
 require('dotenv').config();
 const SECRET = process.env.SECRET;
+const nodemailer = require('nodemailer');
 
 class ApiController {
     login(req, res, next) {
@@ -83,14 +84,83 @@ class ApiController {
     updateinfo(req, res, next) {
         User.updateOne({ _id: req.body._id }, req.body).then((rs) => {
             if (rs.matchedCount === 1 && rs.modifiedCount === 0) {
-                res.json(rs.modifiedCount-1)
-            }else{
+                res.json(rs.modifiedCount - 1)
+            } else {
                 res.json(rs.modifiedCount)
             }
-        
+
         })
             .catch(err => res.json(err));
     }
+
+    forgetpassword(req, res, next) {
+        const username = req.params.username;
+        console.log(username)
+        User.findOne({ username: username }).then(user => {
+            console.log(user)
+            if (!user) {
+                return res.json(0);
+            }
+            if (user.email.length == 0) {
+                return res.json(-1);
+            }
+            const resetToken = Math.random().toString(36).slice(-8);
+            const resetTokenExpiration = Date.now() + 3600000;
+            user.resetToken = resetToken;
+            user.resetTokenExpiration = resetTokenExpiration;
+            user.save();
+
+            const transporter = nodemailer.createTransport({
+                service: 'gmail',
+                secure: false,
+                auth: {
+                    user: 'milkissily@gmail.com',
+                    pass: 'nhhdcrvxcsihlkmb'
+                }
+            });
+
+
+            const mailOptions = {
+                from: 'milkissily@gmail.com',
+                to: user.email,
+                subject: 'Yêu cầu đặt lại mật khẩu',
+                text: `Để đặt lại mật khẩu, vui lòng truy cập liên kết sau: http://192.168.22.105:3000/api/user/reset-password/${resetToken}`,
+                html: `<h1>Mã đặt lại mật khẩu của bạn là:</h1> <h3>${resetToken}</a></h3>`
+            };
+
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.log(error);
+                    return res.json(10);
+                } 
+                    console.log(`${resetToken}`);
+                    return res.json(1);
+            
+            });
+
+
+        }).catch(err => res.json(err))
+    }
+
+    resetpassword(req, res, next) {
+        const resetToken = req.params.resetToken;
+        const password = req.body.password;
+        User.findOne({ resetToken: resetToken, resetTokenExpiration: { $gt: Date.now() } })
+        .then(user=>{
+            console.log(user);
+            if(!user){
+                return res.json(0);
+            }
+            user.password = password;
+            user.resetToken = null;
+            user.resetTokenExpiration = null;
+            user.save();
+            return res.json(1);
+        })
+        .catch(err=>res.json(err))
+
+    }
+
 
 }
 
