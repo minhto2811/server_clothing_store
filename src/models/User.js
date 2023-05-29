@@ -7,7 +7,6 @@ const User = new mongoose.Schema({
     numberphone: { type: String, require: true },
     role: { type: Boolean, require: true },
     email: { type: String, require: false ,unique:true},
-    address: { type: Array, require: false,unique:true },
     image: { type: String, require: false },
     sex:{ type: Boolean, require: false },
     date:{ type: String, require: false },

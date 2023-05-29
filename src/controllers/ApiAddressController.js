@@ -33,28 +33,18 @@ class ApiController {
 
     addNew(req, res, next) {
         const address = req.body;
+        console.log(address)
         Address.create(address).then(
             obj => {
-                User.findOne({ _id: req.params.id_user })
-                    .then(user => {  
-                        user.address = user.address.concat(obj.id);
-                        user.save().then(() => res.json(obj)).catch(err => res.json(err));
-
-                    })
-                    .catch(err => res.json(err))
+                res.json(obj)
             }
         ).catch(err => console.log(err));
     }
 
     address(req, res, next) {
         const id_user = req.params.id_user;
-        User.findOne({ _id: id_user }).then(
-            user => {
-                const id_address = user.address;
-                Address.find({ _id: { $in: id_address } }).then(arr => {
-                    res.json(arr);
-                }).catch(err => res.json(err))
-            }
+        Address.find({ id_user: id_user }).then(
+            arr => res.json(arr)
         ).catch(err => res.json(err));
     }
 
@@ -65,27 +55,11 @@ class ApiController {
     }
 
     delete(req, res, next) {
-        const id_user = req.params.id_user;
-        const id_address = req.body.id_address;
-        console.log(id_user + "  " + id_address);
-        Address.findByIdAndDelete(id_address).then(
-            () => {
-                console.log("xoa address ok")
-                User.findOne({ _id: id_user }).then(
-                    user => {
-                        console.log("tim user ",user)
-                        user.address = user.address.filter(item => item !== id_address);
-                        console.log("sua user ",user)
-                        User.updateOne({ _id: id_user }, user).then(
-                            user1 => {
-                                console.log(" user=> ",user1)
-                                res.json(user);
-                            }
-                        ).catch(err => res.json(err));
-                    }
-                ).catch(err => res.json(err))
-            }
-        ).catch(err => res.json(err));
+        const id_address = req.params.id_address;
+        console.log("delete", id_address)
+        Address.deleteOne({ _id: id_address })
+            .then((rs) => {  res.json(rs.deletedCount)})
+            .catch(err => res.json(err));
     }
 
 

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const Address = new mongoose.Schema({
+    id_user: { type: String, require: true },
     fullname: { type: String, require: true },
     numberphone: { type: String, require: true },
     province: { type: String, require: true },
