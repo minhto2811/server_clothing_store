@@ -14,19 +14,31 @@ class ApiController {
 
     getAll(req, res, next) {
         const id_user = req.params.id_user;
-        Cart.find({ id_user: id_user }).then(arr => {
-            for (let i = 0; i < arr.length; i++) {
-                Product.findOne({ _id: arr[i].id_product })
-                    .then(product => {
-                        arr[i].name_product = product.name;
-                        arr[i].price_product = product.price;
-                        arr[i].sale_product = product.sale;
-                    })
-            }
-            res.json(arr);
-        }).catch(err => res.json(err));
+        Cart.find({ id_user: id_user })
+            .then(arr => {
+                const promises = arr.map(item => {
+                    return Product.findOne({ _id: item.id_product });
+                });
+    
+                return Promise.all(promises)
+                    .then(products => {
+                        products.forEach((product, index) => {
+                            arr[index].image = product.image[0];
+                            arr[index].name_product = product.name;
+                            arr[index].price_product = product.price;
+                            arr[index].sale_product = product.sale;
+                        });
+    
+                        return arr;
+                    });
+            })
+            .then(arr => {
+                console.log(arr);
+                res.json(arr);
+            })
+            .catch(err => res.json(err));
     }
-
+    
 
 }
 
