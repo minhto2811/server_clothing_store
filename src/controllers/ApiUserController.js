@@ -20,12 +20,20 @@ class ApiController {
 
     store(req, res, next) {
         console.log("tao tai khoan: ", req.body)
-        var object = req.body;
-        object.image = "/image/Default-welcomer-1683621300160.png"
-        User.create(object).then((nv) => res.json(nv))
-            .catch((err) => {
-                res.json(err);
-            });
+        User.findOne({username:req.body.username}).then(u => {
+            if (u) {
+                return res.json(null);
+            }
+            var object = req.body;
+            object.image = "/image/Default-welcomer-1683621300160.png"
+            User.create(object).then((nv) => res.json(nv))
+                .catch((err) => {
+                    res.json(err);
+                });
+        }).catch((err) => {
+            res.json(err);
+        });
+
     }
 
 
@@ -82,7 +90,10 @@ class ApiController {
     }
 
     updateinfo(req, res, next) {
+        console.log(req.body._id)
+        console.log(req.body)
         User.updateOne({ _id: req.body._id }, req.body).then((rs) => {
+            console.log(rs)
             if (rs.matchedCount === 1 && rs.modifiedCount === 0) {
                 res.json(rs.modifiedCount - 1)
             } else {
@@ -132,10 +143,10 @@ class ApiController {
                 if (error) {
                     console.log(error);
                     return res.json(10);
-                } 
-                    console.log(`${resetToken}`);
-                    return res.json(1);
-            
+                }
+                console.log(`${resetToken}`);
+                return res.json(1);
+
             });
 
 
@@ -146,18 +157,18 @@ class ApiController {
         const resetToken = req.params.resetToken;
         const password = req.body.password;
         User.findOne({ resetToken: resetToken, resetTokenExpiration: { $gt: Date.now() } })
-        .then(user=>{
-            console.log(user);
-            if(!user){
-                return res.json(0);
-            }
-            user.password = password;
-            user.resetToken = null;
-            user.resetTokenExpiration = null;
-            user.save();
-            return res.json(1);
-        })
-        .catch(err=>res.json(err))
+            .then(user => {
+                console.log(user);
+                if (!user) {
+                    return res.json(0);
+                }
+                user.password = password;
+                user.resetToken = null;
+                user.resetTokenExpiration = null;
+                user.save();
+                return res.json(1);
+            })
+            .catch(err => res.json(err))
 
     }
 
