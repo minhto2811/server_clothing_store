@@ -19,7 +19,7 @@ class ApiController {
                 const promises = arr.map(item => {
                     return Product.findOne({ _id: item.id_product });
                 });
-    
+
                 return Promise.all(promises)
                     .then(products => {
                         products.forEach((product, index) => {
@@ -28,7 +28,7 @@ class ApiController {
                             arr[index].price_product = product.price;
                             arr[index].sale_product = product.sale;
                         });
-    
+
                         return arr;
                     });
             })
@@ -38,7 +38,7 @@ class ApiController {
             })
             .catch(err => res.json(err));
     }
-    
+
 
 }
 
