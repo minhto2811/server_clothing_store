@@ -13,6 +13,7 @@ const apiUserRoute = require('./Api.users.route');
 const apiFavRoute = require('./Api.favourites.route');
 const apiAddrRoute = require('./Api.address.route');
 const apicartRoute = require('./Api.cart.route');
+const apibillRoute = require('./Api.bill.route');
 
 function route(app) {
     app.use('/api/product', apiPrdRoute);
@@ -22,6 +23,7 @@ function route(app) {
     app.use('/api/favourites', apiFavRoute);
     app.use('/api/address', apiAddrRoute);
     app.use('/api/cart', apicartRoute);
+    app.use('/api/bill', apibillRoute);
 
 
 

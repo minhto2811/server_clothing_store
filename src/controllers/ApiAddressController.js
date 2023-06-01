@@ -44,7 +44,13 @@ class ApiController {
     address(req, res, next) {
         const id_user = req.params.id_user;
         Address.find({ id_user: id_user }).then(
-            arr => res.json(arr)
+            arr => {
+                if (!arr) {
+                    res.json(null);
+                }else{
+                    res.json(arr);
+                }
+            }
         ).catch(err => res.json(err));
     }
 
@@ -58,7 +64,7 @@ class ApiController {
         const id_address = req.params.id_address;
         console.log("delete", id_address)
         Address.deleteOne({ _id: id_address })
-            .then((rs) => {  res.json(rs.deletedCount)})
+            .then((rs) => { res.json(rs.deletedCount) })
             .catch(err => res.json(err));
     }
 

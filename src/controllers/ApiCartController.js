@@ -8,6 +8,7 @@ class ApiController {
 
     addProduct(req, res, next) {
         const cart = new Cart(req.body);
+        cart.delete = false;
         cart.save().then(cart => res.json(cart)).catch(err => res.json(err));
     }
 
@@ -36,6 +37,14 @@ class ApiController {
                 console.log(arr);
                 res.json(arr);
             })
+            .catch(err => res.json(err));
+    }
+
+    delete(req, res, next) {
+        const id_cart = req.params.id_cart;
+        console.log(id_cart);
+        Cart.deleteOne({ _id: id_cart })
+            .then(rs => res.json(rs.deletedCount))
             .catch(err => res.json(err));
     }
 
