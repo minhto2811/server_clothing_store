@@ -3,18 +3,6 @@ const { convertleObject } = require('../utils/convertObj');
 const Product = require('../models/Product');
 class ApiController {
 
-    getAll(req, res, next) {
-        Favourite.findOne({ id_user: req.params.id_user })
-            .then(nvs => {
-                if(!nvs){
-                    res.json(null);
-                }else{
-                    res.json(nvs.list_id_product);
-                }
-               
-            })
-            .catch(err => res.json(err));
-    }
 
 
 

@@ -34,7 +34,6 @@ class ApiController {
                     });
             })
             .then(arr => {
-                console.log(arr);
                 res.json(arr);
             })
             .catch(err => res.json(err));

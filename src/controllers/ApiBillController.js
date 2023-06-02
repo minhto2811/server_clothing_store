@@ -15,6 +15,16 @@ class ApiController {
         }).catch(err => res.json(err));
     }
 
+    getAll(req, res, next) {
+        const id_user = req.params.id_user;
+        Bill.find({ id_user: id_user })
+            .then((arr)=>{
+                res.json(arr);
+            })
+            .catch(err => res.json(err));
+
+    }
+
 
 
 }
