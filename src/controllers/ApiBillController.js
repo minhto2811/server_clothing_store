@@ -18,11 +18,24 @@ class ApiController {
     getAll(req, res, next) {
         const id_user = req.params.id_user;
         Bill.find({ id_user: id_user })
-            .then((arr)=>{
+            .then((arr) => {
                 res.json(arr);
             })
             .catch(err => res.json(err));
+    }
 
+    cancelBill(req, res, next) {
+        const id_bill = req.params.id_bill;
+        Bill.findOne({ _id: id_bill })
+            .then(bill => {
+                if (bill.status === 0) {
+                    bill.status = 4;
+                    bill.save().then(rs=>res.json(1)).catch(err=>res.json(err));
+                } else {
+                    res.json(-1);
+                }
+            })
+            .catch(err => res.json(err));
     }
 
 
