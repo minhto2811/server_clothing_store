@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
-
+require('dotenv').config();
+const URI_MONGODB = process.env.URI_MONGODB;
 
 async function connect() {
     try {
-        await mongoose.connect('mongodb://127.0.0.1:27017/ShopQuanAo', { useNewUrlParser: true,
+        await mongoose.connect(URI_MONGODB, { useNewUrlParser: true,
         useUnifiedTopology: true });
         console.log('kết nối db thành công');
     } catch (error) {

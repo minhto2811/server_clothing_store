@@ -1,0 +1,194 @@
+<div class="container">
+    <div class="btn-group my-2">
+        <a href="/product/home" class="btn btn-primary">Sản phẩm</a>
+        <a href="/banner/home" class="btn btn-primary">Banner</a>
+        <a href="/category/home" class="btn btn-primary">Danh mục</a>
+        <a href="/bill/home/0" class="btn btn-primary active" aria-current="page">Đơn hàng</a>
+    </div>
+
+    <div class="btn-group-horizontal" role="group" aria-label="Vertical radio toggle button group">
+
+        <a href="/bill/home/0" class="btn btn-danger  ">Đơn hàng
+            chờ xác nhận</a>
+        <a href="/bill/home/1" class="btn btn-danger  ">Chuẩn bị
+            hàng</a>
+        <a href="/bill/home/2" class="btn btn-danger ">Đang
+            giao hàng</a>
+        <a href="/bill/home/3" class="btn btn-danger  ">Đã
+            giao</a>
+        <a href="/bill/home/4" class="btn btn-danger ">Đã
+            hủy</a>
+
+    </div>
+
+
+    <h1 class="my-4  text-center"> {{statusUpdate}}</h1>
+
+    <form class="form-inline mb-4" method="post" action="/bill/search/{{status}}">
+        <div class="d-flex flex-row justify-content-center">
+            <input class="col-3 col-md-5 col-lg-7 ps-3" type="number" placeholder="Tìm kiếm theo số điện thoại..."
+                aria-label="Search" name="name" value="{{valueSearch}}">
+            <button class="btn btn-outline-success ms-3" type="submit">Tìm kiếm</button>
+        </div>
+    </form>
+
+    <!-- Danh sách user -->
+    <table class="table table-striped table-bordered my-2">
+        <thead class="bg-dark-subtle">
+            <tr>
+                <th class="text-center">#</th>
+                <th class="text-center">Tên người nhận</th>
+                <th class="text-center">Số điện thoại</th>
+                <th class="text-center">Địa chỉ</th>
+                <th class="text-center">Tổng tiền</th>
+                <th class="text-center">Chi tiết</th>
+                <th class="text-center">Phương thức vận chuyển</th>
+                <th class="text-center">Hình thức thanh toán</th>
+                <th class="text-center">Trạng thái</th>
+                {{#if condition}}
+                <th class="text-center">Hành động</th>
+                {{/if}}
+
+            </tr>
+        </thead>
+        <tbody>
+            {{#if condition}}
+            {{#each bills}}
+            <tr>
+                <td class="text-center">{{sum @index}}</td>
+                <td class="text-center">{{this.name}}</td>
+                <td class="text-center">{{this.phone}}</td>
+                <td class="text-center">{{this.address}}</td>
+                <td class="text-center">{{this.total}}</td>
+                <td class="text-center">{{#each this.list}}
+                    {{quantity}} {{name_product}} <br>
+                    {{/each}}
+                </td>
+                <td class="text-center">{{this.methodShipping}}</td>
+                <td class="text-center">{{this.methodPayment}}</td>
+                <td class="text-center status">{{this.status}}</td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-danger btn-sm mr-2" data-bs-toggle="modal"
+                        data-bs-target="#deleteModal" data-bs-id="{{this._id}}">Hủy đơn</button>
+                    <button type="button" class="btn btn-primary btn-sm mr-2" data-bs-toggle="modal"
+                        data-bs-target="#updateModal" data-bs-id="{{this._id}}">Xác nhận</button>
+                </td>
+            </tr>
+            {{/each}}
+            {{else}}
+            {{#each bills}}
+            <tr>
+                <td class="text-center">{{sum @index}}</td>
+                <td class="text-center">{{this.name}}</td>
+                <td class="text-center">{{this.phone}}</td>
+                <td class="text-center">{{this.address}}</td>
+                <td class="text-center">{{this.total}}</td>
+                <td class="text-center">{{#each this.list}}
+                    {{quantity}} {{name_product}} <br>
+                    {{/each}}
+                </td>
+                <td class="text-center">{{this.methodShipping}}</td>
+                <td class="text-center">{{this.methodPayment}}</td>
+                <td class="text-center status">{{this.status}}</td>
+            </tr>
+            {{/each}}
+            {{/if}}
+
+
+
+
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+
+
+
+
+
+{{!-- form hidden --}}
+
+<form method="get" name="delete-user-form"></form>
+
+
+
+{{!-- modal delete --}}
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Hủy đơn</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có muốn hủy đơn hàng này?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quay lại</button>
+                <button type="button" class="btn btn-primary" id="btn-delete-user">Tiếp tục</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Xác nhận đơn</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Xác nhận đơn hàng này?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quay lại</button>
+                <button type="button" class="btn btn-primary" id="btn-update-user">Tiếp tục</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var id_bill, status;
+        var deleteForm = document.forms['delete-user-form'];
+
+        const deleteModal = document.getElementById('deleteModal')
+        deleteModal.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget;
+            id_bill = button.getAttribute('data-bs-id');
+        })
+
+        var btn_del = document.getElementById('btn-delete-user');
+
+        btn_del.onclick = function () {
+            deleteForm.action = '/bill/update/' + id_bill + "/4?_method=GET";
+            deleteForm.submit();
+        }
+
+        updateModal.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget;
+            id_bill = button.getAttribute('data-bs-id');
+            var element = document.querySelector('.status');
+            status = element.innerText;
+        })
+        var btn_up = document.getElementById('btn-update-user');
+
+        btn_up.onclick = function () {
+            deleteForm.action = '/bill/update/' + id_bill + '/' + (parseInt(status) + 1) + "?_method=GET";
+            deleteForm.submit();
+        }
+
+
+
+    });
+</script>

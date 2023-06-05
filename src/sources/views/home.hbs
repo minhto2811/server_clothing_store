@@ -3,6 +3,7 @@
         <a href="/product/home" class="btn btn-primary active" aria-current="page">Sản phẩm</a>
         <a href="/banner/home" class="btn btn-primary">Banner</a>
         <a href="/category/home" class="btn btn-primary">Danh mục</a>
+           <a href="/bill/home/0" class="btn btn-primary">Đơn hàng</a>
     </div>
     <h1 class="my-4  text-center">Quản lí sản phẩm</h1>
 
@@ -99,12 +100,12 @@
         const deleteModal = document.getElementById('deleteModal')
         deleteModal.addEventListener('show.bs.modal', event => {
             const button = event.relatedTarget;
-            ID_user = button.getAttribute('data-bs-id');
+            Id_product = button.getAttribute('data-bs-id');
         })
 
         var btn_del = document.getElementById('btn-delete-user');
         btn_del.onclick = function () {
-            deleteForm.action = 'delete/' + ID_user + "?_method=DELETE";
+            deleteForm.action = 'delete/' + Id_product + "?_method=DELETE";
             deleteForm.submit();
         }
     });

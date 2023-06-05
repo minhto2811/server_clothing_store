@@ -4,14 +4,19 @@ const { config } = require('dotenv');
 require('dotenv').config();
 const SECRET = process.env.SECRET;
 const nodemailer = require('nodemailer');
+var jwt = require('jsonwebtoken');
+
 
 class ApiController {
     login(req, res, next) {
-        console.log("user lay duoc ", req.body)
-        User.findOne({ username: req.body.username, password: req.body.password })
+        User.findOne({ username: req.body.username })
             .then(nvs => {
-                console.log("user ", nvs)
-                res.json(convertleObject(nvs));
+                if (req.body.password === jwt.verify(nvs.password, SECRET)) {
+                    res.json(convertleObject(nvs));
+                } else {
+                    res.json(null);
+                }
+
             })
             .catch(err => res.json(err));
     }
@@ -19,14 +24,18 @@ class ApiController {
 
 
     store(req, res, next) {
-        console.log("tao tai khoan: ", req.body)
-        User.findOne({username:req.body.username}).then(u => {
+        User.findOne({ username: req.body.username }).then(u => {
             if (u) {
                 return res.json(null);
             }
             var object = req.body;
-            object.image = "/image/Default-welcomer-1683621300160.png"
-            User.create(object).then((nv) => res.json(nv))
+            const pass = req.body.password;
+            object.image = "/image/Default-welcomer-1683621300160.png";
+            object.password = jwt.sign(object.password, SECRET);
+            User.create(object).then((nv) => {
+                nv.password = pass;
+                res.json(nv);
+            })
                 .catch((err) => {
                     res.json(err);
                 });
@@ -48,13 +57,12 @@ class ApiController {
                 .catch(err => res.json(err));
         }
         ).catch(err => res.json(err))
-
-
     }
 
 
     changePass(req, res, next) {
-        const filter = { username: req.body.username, password: req.body.password };
+        const pass = jwt.verify(req.body.password, SECRET);
+        const filter = { username: req.body.username, password: pass };
         const update = { $set: { password: req.body.passwordnew } };
         console.log(filter);
         console.log(update);
@@ -155,10 +163,9 @@ class ApiController {
 
     resetpassword(req, res, next) {
         const resetToken = req.params.resetToken;
-        const password = req.body.password;
+        const password = jwt.sign(req.body.password,SECRET);
         User.findOne({ resetToken: resetToken, resetTokenExpiration: { $gt: Date.now() } })
             .then(user => {
-                console.log(user);
                 if (!user) {
                     return res.json(0);
                 }

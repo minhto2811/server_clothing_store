@@ -32,7 +32,7 @@ class ApiController {
         const id_product = req.body.id_product;
         Recently.findOne({ id_user: id_user })
             .then((rec) => {
-                rec.list_id_product =rec.list_id_product.filter(item => item !== id_product);
+                rec.list_id_product = rec.list_id_product.filter(item => item !== id_product);
                 rec.save();
                 res.json(1);
             }).catch(err => res.json(err))
