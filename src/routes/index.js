@@ -6,6 +6,7 @@ const cateRoute = require('./Category.route');
 const errRoute = require('./Error.route');
 const billRoute = require('./Bill.route');
 const siteRoute = require('./site.route');
+
 //api
 const apiPrdRoute = require('./Api.products.route');
 const apiBnRoute = require('./Api.banners.route');
@@ -37,7 +38,7 @@ function route(app) {
     app.use('/bill', billRoute);
     app.use('/user', siteRoute);
 
-    // app.use("",errRoute);
+    app.use("",errRoute);
 
 }
 

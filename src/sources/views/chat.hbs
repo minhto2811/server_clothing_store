@@ -1,0 +1,86 @@
+<h1>Realtime Chat</h1>
+
+<div>
+    <label for="channelInput">Channel:</label>
+    <input type="text" id="channelInput">
+    <button onclick="joinChannel()">Join</button>
+    <button onclick="leaveChannel()">Leave</button>
+</div>
+
+<div>
+    <ul id="channelList"></ul>
+</div>
+
+<div>
+    <label for="messageInput">Message:</label>
+    <input type="text" id="messageInput">
+    <button onclick="sendMessage()">Send</button>
+</div>
+
+<div>
+    <ul id="messages"></ul>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+    const socket = io();
+
+    // Gửi yêu cầu tham gia kênh chat
+    function joinChannel() {
+        const channel = document.getElementById('channelInput').value;
+        socket.emit('join', channel);
+    }
+
+    // Gửi yêu cầu rời khỏi kênh chat
+    function leaveChannel() {
+        const channel = document.getElementById('channelInput').value;
+        socket.emit('leave', channel);
+    }
+
+    // Gửi tin nhắn trong kênh chat
+    function sendMessage() {
+        const channel = document.getElementById('channelInput').value;
+        const message = document.getElementById('messageInput').value;
+        socket.emit('message', { channel, message });
+    }
+
+    // Hiển thị tin nhắn từ server
+    function showMessage(message) {
+        const messageElement = document.createElement('li');
+        messageElement.textContent = message;
+        document.getElementById('messages').appendChild(messageElement);
+    }
+
+    // Cập nhật danh sách các kênh chat
+    function updateChannelList(channels) {
+        const channelListElement = document.getElementById('channelList');
+        channelListElement.innerHTML = '';
+
+        channels.forEach((channel) => {
+            const channelElement = document.createElement('li');
+            channelElement.textContent = channel;
+            channelListElement.appendChild(channelElement);
+        });
+    }
+
+    // Khi server gửi danh sách các kênh chat
+    socket.on('channel list', (channels) => {
+        updateChannelList(channels);
+    });
+
+    // Khi có người dùng khác tham gia kênh chat
+    socket.on('user joined', (channel) => {
+        showMessage(`A user joined channel '${channel}'`);
+    });
+
+    // Khi có người dùng khác rời khỏi kênh chat
+    socket.on('user left', (channel) => {
+        showMessage(`A user left channel '${channel}'`);
+    });
+
+    // Khi có tin nhắn mới trong kênh chat
+    socket.on('message', (message) => {
+        showMessage(message);
+    });
+</script>

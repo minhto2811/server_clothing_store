@@ -59,7 +59,7 @@ class ApiController {
                     res.json(null);
                 }
             })
-            .catch(err => console.log(err));
+            .catch(err => console.log(null));
     }
 
 

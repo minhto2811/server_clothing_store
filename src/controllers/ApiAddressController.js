@@ -51,7 +51,7 @@ class ApiController {
                     res.json(arr);
                 }
             }
-        ).catch(err => res.json(err));
+        ).catch(err => res.json(null));
     }
 
     update(req, res, next) {

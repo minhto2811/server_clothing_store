@@ -66,7 +66,7 @@ class ApiController {
                         res.json(err)
                     })
             })
-            .catch(err => res.json(err));
+            .catch(err => res.json(null));
     }
 
 }

@@ -36,7 +36,7 @@ class ApiController {
             .then(arr => {
                 res.json(arr);
             })
-            .catch(err => res.json(err));
+            .catch(err => res.json(null));
     }
 
     delete(req, res, next) {
