@@ -51,7 +51,6 @@ app.set('views', path.join(__dirname, './src/sources/views'));
 
 route(app);
 
-const channels = {};
 
 
 
