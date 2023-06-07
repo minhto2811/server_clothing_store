@@ -29,10 +29,27 @@ class ApiController {
 
     cancelBill(req, res, next) {
         const id_bill = req.params.id_bill;
-        const status = req.params.status;
-        Bill.updateOne({ _id: id_bill }, { $set: { status: status } })
+        const status = parseInt(req.params.status);
+        Bill.findOneAndUpdate({ _id: id_bill }, { $set: { status: status } })
             .then(bill => {
-                res.redirect('/bill/home/' + status);
+                if (status != 3) {
+                    res.redirect('/bill/home/' + (status - 1));
+                } else {
+                    const updateOperations = bill.list.map(({ id_product, quantity }) => ({
+                        updateOne: {
+                            filter: { _id: id_product },
+                            update: { $inc: { sold: quantity } }
+                        }
+                    }));
+                    Product.bulkWrite(updateOperations)
+                        .then(() => {
+                            res.redirect('/bill/home/' + (status - 1));
+                        })
+                        .catch((error) => {
+                            res.redirect('/bill/home/' + (status - 1));
+                        });
+                }
+
             })
             .catch(err => res.json(err));
     }
@@ -44,7 +61,7 @@ class ApiController {
         Bill.find({ phone: query, status: status })
             .then(nv => {
                 if (nv.length === 0) {
-                    res.redirect('/bill/home/'+status);
+                    res.redirect('/bill/home/' + status);
                 } else {
                     if (status === 0) {
                         var statusUpdate = 'Đơn chờ xác nhận';

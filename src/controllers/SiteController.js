@@ -1,16 +1,22 @@
 const session = require('express-session');
 const User = require('../models/User');
+const Bill = require('../models/Bill');
 const { convertleObject } = require('../utils/convertObj');
 const { config } = require('dotenv');
 require('dotenv').config();
 const SECRET = process.env.SECRET;
-var jwt = require('jsonwebtoken')
+var jwt = require('jsonwebtoken');
+const { use } = require('../routes/Banner.route');
 
 
 class SiteController {
 
     signIn(req, res) {
-        res.render('sign-in', { layout: 'main' });
+        if (req.session.user != null && req.session.user.role) {
+            res.redirect('/product/home');
+        } else {
+            res.render('sign-in', { layout: 'main' });
+        }
     }
     forgotPassword(req, res) {
         res.render('forgot-password', { layout: 'main' });
@@ -70,13 +76,100 @@ class SiteController {
             .catch(next);
     }
 
-    logOut(req, res, next) {
-        if (req.session.user != null) {
-            req.session.user = null;
-            req.session.destroy();
-        }
-        res.redirect('/sign-in');
+    logout(req, res, next) {
+        req.session.destroy();
+        res.redirect('/user/sign-in');
     }
+    settings(req, res, next) {
+        res.render('user', { layout: 'main', nv: req.session.user });
+    }
+
+
+    update(req, res, next) {
+        const user = req.session.user;
+        user.fullname = req.body.fullname;
+        user.numberphone = req.body.numberphone;
+        user.email = req.body.email;
+        if (req.file || req.files) {
+            user.image = `/image/${req.file.filename}`;
+        }
+        User.findOneAndUpdate({ _id: user._id }, user).then(() => {
+            req.session.user = user;
+            res.redirect('/user/settings')
+        })
+            .catch(err => res.json(err));
+    }
+
+    password(req, res, next) {
+        res.render('password', { layout: 'main' });
+    }
+
+    changePassword(req, res, next) {
+        const passOld = jwt.sign(req.body.oldPassword, SECRET);
+        const passNew = jwt.sign(req.body.newPassword, SECRET);
+        const id = req.session.user._id;
+        User.findOne({ _id: id, password: passOld })
+            .then((user) => {
+                if (!user) {
+                    res.render('password', { layout: 'main', err: 'Mật khẩu cũ không chính xác' });
+                } else {
+                    user.password = passNew;
+                    user.save().then(() => {
+                        req.session.user = user;
+                        res.render('password', { layout: 'main', msg: 'Thay đổi mật khẩu thành công' });
+                    }).catch(err => res.json(err));
+                }
+            })
+            .catch(err => res.json(err));
+    }
+
+    statistical(req, res, next) {
+        res.render('statistical', { layout: 'main' });
+    }
+
+    getStatistical(req, res, next) {
+        const startDate = new Date(req.body.startDate);
+        const endDate = new Date(req.body.endDate);
+
+
+        if (startDate.getTime() === endDate.getTime()) {
+            const startOfDay = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+            const endOfDay = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate() + 1);
+
+            Bill.find({
+                date: {
+                    $gte: startOfDay,
+                    $lt: endOfDay
+                }
+            }).then((bill) => {
+                let totalSum = 0;
+                for (let i = 0; i < bill.length; i++) {
+                    totalSum += bill[i].total;
+                }
+
+                res.render('statistical', { layout: 'main', totalSum, start: req.body.startDate, end: req.body.endDate });
+            }).catch(err => res.json(err));
+        } else {
+            if (startDate.getTime() > endDate.getTime()) {
+                res.render('statistical', { layout: 'main', err: 'Ngày bắt đầu phải nhỏ hơn ngày kết thúc' });
+            } else {
+                Bill.find({
+                    date: {
+                        $gte: startDate,
+                        $lte: endDate
+                    }
+                }).then((bill) => {
+                    let totalSum = 0;
+                    for (let i = 0; i < bill.length; i++) {
+                        totalSum += bill[i].total;
+                    }
+
+                    res.render('statistical', { layout: 'main', totalSum, start: req.body.startDate, end: req.body.endDate });
+                }).catch(err => res.json(err));
+            }
+        }
+    }
+
 
 }
 

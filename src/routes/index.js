@@ -38,7 +38,7 @@ function route(app) {
     app.use('/bill', billRoute);
     app.use('/user', siteRoute);
 
-    app.use("",errRoute);
+    // app.use("",errRoute);
 
 }
 

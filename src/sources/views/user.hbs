@@ -1,0 +1,77 @@
+<div class="container">
+    <div class="btn-group my-2">
+        <a href="/product/home" class="btn btn-primary" aria-current="page">Sản phẩm</a>
+        <a href="/banner/home" class="btn btn-primary">Banner</a>
+        <a href="/category/home" class="btn btn-primary">Danh mục</a>
+        <a href="/bill/home/0" class="btn btn-primary">Đơn hàng</a>
+        <a href="/user/settings" class="btn btn-primary active">Người dùng</a>
+        <a href="/user/statistical" class="btn btn-primary">Thống kê</a>
+    </div>
+
+
+
+    <div class="m-auto" style="width: 600px;">
+        <h2 class="text-center my-3">Thiết lập tài khoản</h2>
+        <form id="myForm" method="post" action="/user/update" enctype="multipart/form-data">
+            <div class="form-group my-2">
+                <label for="fullname">Họ và tên:</label>
+                <input type="text" class="form-control my-1" id="fullname" placeholder="Enter full fullname"
+                    name="fullname" value="{{nv.fullname}}" required>
+            </div>
+
+            <div class="form-group my-2 d-flex flex-column">
+                <label for="image">Ảnh đại diện</label>
+                <img class="border my-2" src="{{nv.image}}" style="width: 120px;height: 100px;" alt="Lỗi hiển thị!"
+                    id="preview-image" />
+                <input type="file" class="form-control-file" name="image" id="image" accept="image/*"
+                    onchange="previewImage(event);">
+            </div>
+
+            <div class="form-group my-2">
+                <label for="numberphone">Số điện thoại:</label>
+                <input type="number" class="form-control my-1" id="numberphone" placeholder="Enter numberphone"
+                    name="numberphone" value="{{nv.numberphone}}" required>
+            </div>
+
+            <div class="form-group my-2">
+                <label for="email">Email:</label>
+                <input type="email" class="form-control my-1" id="email" name="email" placeholder="Enter email"
+                    value="{{nv.email}}" required>
+            </div>
+
+            <button type="submit" class="btn btn-success col-3 col-lg-12 my-3">Cập nhật</button>
+
+        </form>
+    </div>
+    <div class="m-auto" style="width: 600px;">
+        <form id="myForm" method="get" action="/user/password" enctype="multipart/form-data">
+            <button type="submit" class="btn btn-secondary col-3 col-lg-12 my-3">Đổi mật khẩu</button>
+        </form>
+    </div>
+    <div class="m-auto" style="width: 600px;">
+        <form id="myForm" method="post" action="/user/logout" enctype="multipart/form-data">
+            <button type="submit" class="btn btn-danger col-3 col-lg-12 my-3">Đăng xuất</button>
+        </form>
+    </div>
+</div>
+
+
+
+<script>
+
+
+    function previewImage(event) {
+        var input = event.target;
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var image = document.getElementById("preview-image");
+                image.src = e.target.result;
+                image.style.display = "block";
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+
+</script>
