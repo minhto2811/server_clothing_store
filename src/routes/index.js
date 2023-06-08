@@ -17,6 +17,8 @@ const apiAddrRoute = require('./Api.address.route');
 const apicartRoute = require('./Api.cart.route');
 const apibillRoute = require('./Api.bill.route');
 const apirecRoute = require('./Api.recently.route');
+const apinotRoute = require('./Api.notify.route');
+
 
 function route(app) {
     app.use('/api/product', apiPrdRoute);
@@ -28,6 +30,7 @@ function route(app) {
     app.use('/api/cart', apicartRoute);
     app.use('/api/bill', apibillRoute);
     app.use('/api/recently', apirecRoute);
+    app.use('/api/notify', apinotRoute);
 
 
 

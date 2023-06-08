@@ -1,7 +1,9 @@
 const Bill = require('../models/Bill');
 const Cart = require('../models/Cart');
 const Product = require('../models/Product');
+const Notify = require('../models/Notify');
 const { convertleObject } = require('../utils/convertObj');
+
 
 class ApiController {
 
@@ -33,7 +35,11 @@ class ApiController {
         Bill.findOneAndUpdate({ _id: id_bill }, { $set: { status: status } })
             .then(bill => {
                 if (status != 3) {
-                    res.redirect('/bill/home/' + (status - 1));
+                    Notify.updateOne({ _id: bill.id }, { $set: { status: status } }).then(
+                        () => res.redirect('/bill/home/' + (status - 1))
+                    ).catch(err => res.json(err));
+
+
                 } else {
                     const updateOperations = bill.list.map(({ id_product, quantity }) => ({
                         updateOne: {
@@ -43,10 +49,22 @@ class ApiController {
                     }));
                     Product.bulkWrite(updateOperations)
                         .then(() => {
-                            res.redirect('/bill/home/' + (status - 1));
+                            const id = bill._id;
+                            console.log("fb", bill)
+                            const billRef = dbfb.ref('bills/' + bill.id_user + "/" + id);
+                            billRef.set(status)
+                                .then(() => {
+                                    console.log('firebase ok')
+                                    res.redirect('/bill/home/' + (status - 1));
+                                })
+                                .catch((error) => {
+                                    console.log('err fb');
+                                    res.json(error);
+                                });
+
                         })
                         .catch((error) => {
-                            res.redirect('/bill/home/' + (status - 1));
+                            res.json(error);
                         });
                 }
 

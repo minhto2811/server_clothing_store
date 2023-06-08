@@ -27,9 +27,9 @@
         <thead class="bg-dark-subtle">
             <tr>
                 <th class="text-center">#</th>
-                <th class="text-center">ID</th>
                 <th class="text-center">Tên sản phẩm</th>
                 <th class="text-center">Đơn giá</th>
+                 <th class="text-center">Đã bán</th>
                 <th class="text-center">Tình trạng</th>
                 <th class="text-center">Hành động</th>
             </tr>
@@ -39,9 +39,9 @@
             {{#each users}}
             <tr>
                 <td class="text-center">{{sum @index}}</td>
-                <td class="text-center">{{this._id}}</td>
                 <td class="text-center">{{this.name}}</td>
                 <td class="text-center">{{this.price}}</td>
+                  <td class="text-center">{{this.sold}}</td>
                 <td class="text-center">{{this.status}}</td>
                 <td class="text-center">
                     <!-- Các nút xóa, sửa user -->

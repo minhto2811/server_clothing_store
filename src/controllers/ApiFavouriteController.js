@@ -31,8 +31,6 @@ class ApiController {
     }
 
     update(req, res, next) {
-        console.log(req.params.id_user);
-        console.log(req.body.id_product);
         Favourite.findOne({ id_user: req.params.id_user })
             .then(fav => {
                 const list = fav.list_id_product.filter(function (element) {
@@ -56,10 +54,8 @@ class ApiController {
     info(req, res, next) {
         Favourite.findOne({ id_user: req.params.id_user })
             .then(nvs => {
-                console.log(nvs)
                 Product.find({ _id: { $in: nvs.list_id_product } })
                     .then((pro) => {
-                        console.log(pro)
                         res.json(pro)
                     })
                     .catch(err => {

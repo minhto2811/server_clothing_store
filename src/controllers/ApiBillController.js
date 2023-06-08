@@ -1,7 +1,11 @@
 const Bill = require('../models/Bill');
 const Cart = require('../models/Cart');
-const Product = require('../models/Product');
+const Notify = require('../models/Notify');
 const { convertleObject } = require('../utils/convertObj');
+
+
+// const dbfb = require('../config/firebase');
+
 
 class ApiController {
 
@@ -10,7 +14,11 @@ class ApiController {
         const idArray = bill.list.map(item => item._id);
         Bill.create(bill).then(bill => {
             Cart.deleteMany({ _id: { $in: idArray } })
-                .then(() => res.json(bill))
+                .then(() => {
+                    Notify.create({ id_bill: bill.id, id_user: bill.id_user, status: 0 }).then(
+                        () => res.json(bill)
+                    ).catch(err => res.json(err));
+                })
                 .catch(err => res.json(err))
         }).catch(err => res.json(err));
     }
@@ -30,7 +38,7 @@ class ApiController {
             .then(bill => {
                 if (bill.status === 0) {
                     bill.status = 4;
-                    bill.save().then(rs=>res.json(1)).catch(err=>res.json(err));
+                    bill.save().then(rs => res.json(1)).catch(err => res.json(err));
                 } else {
                     res.json(-1);
                 }

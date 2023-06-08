@@ -163,7 +163,7 @@ class ApiController {
 
     resetpassword(req, res, next) {
         const resetToken = req.params.resetToken;
-        const password = jwt.sign(req.body.password,SECRET);
+        const password = jwt.sign(req.body.password, SECRET);
         User.findOne({ resetToken: resetToken, resetTokenExpiration: { $gt: Date.now() } })
             .then(user => {
                 if (!user) {
@@ -176,6 +176,16 @@ class ApiController {
                 return res.json(1);
             })
             .catch(err => res.json(err))
+
+    }
+
+    tokenNotify(req, res, next) {
+        const id_user = req.params.id_user;
+        const tokenNotify = req.body.tokenNotify;
+        console.log(id_user+"- "+tokenNotify)
+        User.updateOne({ _id: id_user }, { $set: { tokenNotify: tokenNotify } })
+            .then((rs) => res.json(rs.modifiedCount))
+            .catch(err => res.json(err));
 
     }
 

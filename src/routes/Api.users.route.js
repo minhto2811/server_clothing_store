@@ -3,9 +3,9 @@ const router = express.Router();
 const apiController = require('../controllers/ApiUserController');
 const upload = require('../utils/saveIMG');
 
-
+router.post('/tokenNotify/:id_user', apiController.tokenNotify);
 router.post('/login', apiController.login);
-router.post('/add',  apiController.store);
+router.post('/add', apiController.store);
 router.post('/info', apiController.info);
 router.post('/update/image/:username', upload.single('image'), apiController.update);
 router.post('/password', apiController.changePass);
