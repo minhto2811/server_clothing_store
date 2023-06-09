@@ -61,9 +61,10 @@ class ApiController {
 
 
     changePass(req, res, next) {
-        const pass = jwt.verify(req.body.password, SECRET);
+        const pass = jwt.sign(req.body.password, SECRET);
+        const passNew = jwt.sign(req.body.passwordnew, SECRET);
         const filter = { username: req.body.username, password: pass };
-        const update = { $set: { password: req.body.passwordnew } };
+        const update = { $set: { password: passNew } };
         console.log(filter);
         console.log(update);
         User.updateOne(filter, update)
@@ -144,7 +145,8 @@ class ApiController {
                 to: user.email,
                 subject: 'Yêu cầu đặt lại mật khẩu',
                 text: `Để đặt lại mật khẩu, vui lòng truy cập liên kết sau: http://192.168.22.105:3000/api/user/reset-password/${resetToken}`,
-                html: `<h1>Mã đặt lại mật khẩu của bạn là:</h1> <h3>${resetToken}</a></h3>`
+                html: `<h2>Mã đặt lại mật khẩu của bạn là:</h2> <h1>${resetToken}</a></h1>
+                <img src="https://cdn.thuvienphapluat.vn/uploads/tintuc/2023/05/23/cach-lay-lai-mat-khau-VNeID.jpg" alt="Hình ảnh">`
             };
 
             transporter.sendMail(mailOptions, (error, info) => {
@@ -182,7 +184,7 @@ class ApiController {
     tokenNotify(req, res, next) {
         const id_user = req.params.id_user;
         const tokenNotify = req.body.tokenNotify;
-        console.log(id_user+"- "+tokenNotify)
+        console.log(id_user + "- " + tokenNotify)
         User.updateOne({ _id: id_user }, { $set: { tokenNotify: tokenNotify } })
             .then((rs) => res.json(rs.modifiedCount))
             .catch(err => res.json(err));

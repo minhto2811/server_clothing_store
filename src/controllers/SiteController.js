@@ -130,17 +130,17 @@ class SiteController {
     getStatistical(req, res, next) {
         const startDate = new Date(req.body.startDate);
         const endDate = new Date(req.body.endDate);
+        const startOfDay = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate()-1);
+        const endOfDay = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate()+1);
 
-
-        if (startDate.getTime() === endDate.getTime()) {
-            const startOfDay = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
-            const endOfDay = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate() + 1);
-
+        if (startDate.getTime() > endDate.getTime()) {
+            res.render('statistical', { layout: 'main', err: 'Ngày bắt đầu phải nhỏ hơn ngày kết thúc' });
+        } else {
             Bill.find({
                 date: {
                     $gte: startOfDay,
-                    $lt: endOfDay
-                }
+                    $lte: endOfDay
+                },status:3
             }).then((bill) => {
                 let totalSum = 0;
                 for (let i = 0; i < bill.length; i++) {
@@ -149,24 +149,6 @@ class SiteController {
 
                 res.render('statistical', { layout: 'main', totalSum, start: req.body.startDate, end: req.body.endDate });
             }).catch(err => res.json(err));
-        } else {
-            if (startDate.getTime() > endDate.getTime()) {
-                res.render('statistical', { layout: 'main', err: 'Ngày bắt đầu phải nhỏ hơn ngày kết thúc' });
-            } else {
-                Bill.find({
-                    date: {
-                        $gte: startDate,
-                        $lte: endDate
-                    }
-                }).then((bill) => {
-                    let totalSum = 0;
-                    for (let i = 0; i < bill.length; i++) {
-                        totalSum += bill[i].total;
-                    }
-
-                    res.render('statistical', { layout: 'main', totalSum, start: req.body.startDate, end: req.body.endDate });
-                }).catch(err => res.json(err));
-            }
         }
     }
 

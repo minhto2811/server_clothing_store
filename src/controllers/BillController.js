@@ -34,10 +34,10 @@ class ApiController {
         const id_bill = req.params.id_bill;
         const status = parseInt(req.params.status);
         Bill.findOneAndUpdate({ _id: id_bill }, { $set: { status: status } })
-            .then(bill => {
+            .then(async bill => {
                 let notifyUpdatePromise = null;
                 if (status != 3) {
-                    notifyUpdatePromise = Notify.updateOne({ _id: bill.id }, { $set: { status: status } });
+                    notifyUpdatePromise = Notify.updateOne({ id_bill:id_bill  }, { $set: { status: status } });
                 } else {
                     const updateOperations = bill.list.map(({ id_product, quantity }) => ({
                         updateOne: {
@@ -48,7 +48,8 @@ class ApiController {
                     notifyUpdatePromise = Product.bulkWrite(updateOperations);
                 }
 
-                return notifyUpdatePromise.then(() => bill);
+                await notifyUpdatePromise;
+                return bill;
             })
             .then(bill => {
                 return User.findOne({ _id: bill.id_user })
