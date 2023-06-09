@@ -3,7 +3,8 @@ const Cart = require('../models/Cart');
 const Product = require('../models/Product');
 const Notify = require('../models/Notify');
 const { convertleObject } = require('../utils/convertObj');
-
+const User = require('../models/User');
+const axios = require('axios');
 
 class ApiController {
 
@@ -34,12 +35,9 @@ class ApiController {
         const status = parseInt(req.params.status);
         Bill.findOneAndUpdate({ _id: id_bill }, { $set: { status: status } })
             .then(bill => {
+                let notifyUpdatePromise = null;
                 if (status != 3) {
-                    Notify.updateOne({ _id: bill.id }, { $set: { status: status } }).then(
-                        () => res.redirect('/bill/home/' + (status - 1))
-                    ).catch(err => res.json(err));
-
-
+                    notifyUpdatePromise = Notify.updateOne({ _id: bill.id }, { $set: { status: status } });
                 } else {
                     const updateOperations = bill.list.map(({ id_product, quantity }) => ({
                         updateOne: {
@@ -47,29 +45,53 @@ class ApiController {
                             update: { $inc: { sold: quantity } }
                         }
                     }));
-                    Product.bulkWrite(updateOperations)
-                        .then(() => {
-                            const id = bill._id;
-                            console.log("fb", bill)
-                            const billRef = dbfb.ref('bills/' + bill.id_user + "/" + id);
-                            billRef.set(status)
-                                .then(() => {
-                                    console.log('firebase ok')
-                                    res.redirect('/bill/home/' + (status - 1));
-                                })
-                                .catch((error) => {
-                                    console.log('err fb');
-                                    res.json(error);
-                                });
-
-                        })
-                        .catch((error) => {
-                            res.json(error);
-                        });
+                    notifyUpdatePromise = Product.bulkWrite(updateOperations);
                 }
 
+                return notifyUpdatePromise.then(() => bill);
             })
-            .catch(err => res.json(err));
+            .then(bill => {
+                return User.findOne({ _id: bill.id_user })
+                    .then(user => {
+                        let body = "";
+                        if (status == 1) {
+                            body = " đã được xác nhận";
+                        } else if (status == 2) {
+                            body = " đang được giao";
+                        } else if (status == 3) {
+                            body = " đã được giao thành công";
+                        } else {
+                            body = " đã bị hủy";
+                        }
+                        const data = {
+                            "data": {
+                                "title": "Có thông báo mới",
+                                "body": "Đơn hàng có mã " + bill.id + body,
+                                "status":status
+                            },
+                            "to": user.tokenNotify
+                        };
+
+                        const headers = {
+                            "Authorization": 'key=AAAA8GzFVPw:APA91bF-C8cV3b1M6Ag3R7Raxd0sUH5dsZ9UTbd7EOs04FE9DgHVfYOc5m4R6IrOGQa21GzkT1ciXgUPzZQF7EcfYdsLmY5F0NPVZPqfNT1U6W08W632lmxFPpqcWWKnP1mTOQP9RPUw',
+                            "Content-Type": "application/json"
+                        };
+
+                        return axios.post('https://fcm.googleapis.com/fcm/send', data, { headers })
+                            .then(response => {
+                                return { bill, response };
+                            });
+                    });
+            })
+            .then(({ bill, response }) => {
+                console.log('gửi thông báo đến thiết bị thành công', bill);
+                res.redirect('/bill/home/' + (status - 1));
+            })
+            .catch(error => {
+                console.log('gửi thông báo đến thiết bị thất bại', error);
+                res.json(error);
+            });
+
     }
 
     search(req, res, next) {
