@@ -35,20 +35,17 @@ class ApiController {
         const status = parseInt(req.params.status);
         Bill.findOneAndUpdate({ _id: id_bill }, { $set: { status: status } })
             .then(async bill => {
-                let notifyUpdatePromise = null;
-                if (status != 3) {
-                    notifyUpdatePromise = Notify.updateOne({ id_bill:id_bill  }, { $set: { status: status } });
-                } else {
+                await Notify.updateOne({ id_bill: id_bill }, { $set: { status: status } });
+                if (status == 3) {
                     const updateOperations = bill.list.map(({ id_product, quantity }) => ({
                         updateOne: {
                             filter: { _id: id_product },
                             update: { $inc: { sold: quantity } }
                         }
                     }));
-                    notifyUpdatePromise = Product.bulkWrite(updateOperations);
+                    await Product.bulkWrite(updateOperations);
                 }
 
-                await notifyUpdatePromise;
                 return bill;
             })
             .then(bill => {
@@ -68,7 +65,7 @@ class ApiController {
                             "data": {
                                 "title": "Có thông báo mới",
                                 "body": "Đơn hàng có mã " + bill.id + body,
-                                "status":status
+                                "status": status
                             },
                             "to": user.tokenNotify
                         };
