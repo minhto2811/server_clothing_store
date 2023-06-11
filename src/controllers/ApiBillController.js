@@ -24,6 +24,7 @@ class ApiController {
                                 "data": {
                                     "title": "Có thông báo mới",
                                     "body": "Đơn hàng có mã " + bill.id + " đặt thành công",
+                                    "status":0
                                 },
                                 "to": token
                             };
@@ -59,20 +60,40 @@ class ApiController {
 
     cancelBill(req, res, next) {
         const id_bill = req.params.id_bill;
-        Bill.findOne({ _id: id_bill })
-            .then(bill => {
-                if (bill.status === 0) {
-                    bill.status = 4;
-                    bill.save().then(rs => res.json(1)).catch(err => res.json(err));
-                } else {
-                    res.json(-1);
-                }
+        const token = req.params.token;
+        Bill.updateOne({ _id: id_bill }, { $set: { status: 4 } })
+            .then(() => {
+                Notify.updateOne({ id_bill: id_bill }, { $set: { status: 4 } }).then(
+                    () => {
+                        res.json(1);
+                        const data = {
+                            "data": {
+                                "title": "Có thông báo mới",
+                                "body": "Đơn hàng có mã " +id_bill + " hủy thành công",
+                                "status":4
+                            },
+                            "to": token
+                        };
+
+                        const headers = {
+                            "Authorization": 'key=AAAA8GzFVPw:APA91bF-C8cV3b1M6Ag3R7Raxd0sUH5dsZ9UTbd7EOs04FE9DgHVfYOc5m4R6IrOGQa21GzkT1ciXgUPzZQF7EcfYdsLmY5F0NPVZPqfNT1U6W08W632lmxFPpqcWWKnP1mTOQP9RPUw',
+                            "Content-Type": "application/json"
+                        };
+
+                        axios.post('https://fcm.googleapis.com/fcm/send', data, { headers })
+                            .then(function (response) {
+                                console.log('gửi thông báo đến thiết bị thành công', data)
+                            })
+                            .catch(function (error) {
+                                console.log('gửi thông báo đến thiết bị thất bại')
+                            });
+
+                    }).catch(err => res.json(err));
             })
             .catch(err => res.json(err));
+
+
     }
-
-
-
 }
 
 
