@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 const Notify = new mongoose.Schema({
     id_user: { type: String, require: true },
-    id_bill: { type: String, require: true },
+    id_bill: { type: String, require: true,unique:true },
     time: { type: Date, default: Date.now },
     status:{ type: Number, require: true },
 
