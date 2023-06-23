@@ -1,23 +1,14 @@
 const { json } = require('body-parser');
 const Product = require('../models/Product');
-const Status = require('../models/Status');
 const Category = require('../models/Category');
 const Banner = require('../models/Banner');
 
 const { convertleObject } = require('../utils/convertObj');
 
 
-const dataS = [];
+const dataS = ['Còn hàng','Hết hàng','Dừng bán'];
 const dataC = [];
 const dataB = ["Trống"];
-
-Status.find({})
-    .then(products => {
-        for (let index = 0; index < convertleObject(products).length; index++) {
-            dataS.push(convertleObject(products)[index].status);
-        }
-    })
-    .catch(err => console.log(err));
 
 
 Banner.find({})
